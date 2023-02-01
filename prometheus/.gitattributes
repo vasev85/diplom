@@ -1,0 +1,6 @@
+nodeexporter.yml filter=lfs diff=lfs merge=lfs -text
+prometheus.yml filter=lfs diff=lfs merge=lfs -text
+alertmanager.yml filter=lfs diff=lfs merge=lfs -text
+alert.rules filter=lfs diff=lfs merge=lfs -text
+alertmanager.service filter=lfs diff=lfs merge=lfs -text
+prometheus.service filter=lfs diff=lfs merge=lfs -text
