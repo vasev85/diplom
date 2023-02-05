@@ -5,10 +5,7 @@
 
 
 
-# 
-# output "iALL" {
-#   value = yandex_compute_instance.Server[*]
-# }
-output "ALL" {
-  value = yandex_compute_instance.http[*]
+
+output "iALL" {
+  value = yandex_compute_instance.Server[*]
 }

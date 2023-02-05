@@ -7,121 +7,106 @@ terraform {
   required_version = ">= 0.13"
 }
    
-provider "yandex" {
-  token     = "AQAAAAABz_BFAATuweNa2kpvwEGgrvoWMU3_QyY"
-  cloud_id  = "b1gpml8l4s2d2nb7djdk"
-  folder_id = "b1g466a72p3364emafpr"
- # zone      = "ru-central1-a"
-}  
-
-variable "vm_http" {
-  description = "list of the names  http "
-  type        = list(string)
-  default     = ["http22", "http11"]
-#  default     = ["http22", "prometheus11", "grafana11", "sg11", "elastic11", "kibana11"]
-}
-variable "vm_names" {
-  description = "list of the names  VM "
-  type        = list(string)
-  default     = [ "pion"]
-#  default     = ["http22", "prometheus11", "grafana11", "sg11", "elastic11", "kibana11"]
-}
-
-# variable "vpcs" {
-#   type = map(object({
-#     ip = string
-#   }))
-# }
-
-
 
 
 
 
 
 # http-server
-resource "yandex_compute_instance" "http"  {
-    count = length(var.vm_http)
-    name = var.vm_http[count.index]
-    platform_id = "standard-v3"
-    zone = var.vm_http[count.index] == "http22" ? "ru-central1-a" :  "ru-central1-b" 
-    hostname = "${var.vm_http[count.index]}.dip."
-
-
-
-#Прерываяемая ВМ
-scheduling_policy {
-    preemptible = true
-  }
-
-  resources {
-    cores  = 2
-    memory = 2
-    core_fraction = 20
-  }
-
-  boot_disk {
-    initialize_params {
-      #size = 4194304 
-      image_id = "fd8qc4ui9j0elhh8im0n"
-    }
-  }
-
-  network_interface {
-    #subnet_id = "yandex_vpc_subnet.dip-ru-central1-a11.id" 
-   subnet_id = var.vm_http[count.index] == "http22"  ? yandex_vpc_subnet.dip-ru-central1-a11.id : yandex_vpc_subnet.dip-ru-central1-b11.id
-  dns_record {
-    fqdn = "${var.vm_http[count.index]}.dip."
-    ttl = 300
-  }
-    nat       = true
-  }
-  
-
-
-metadata = {
-    user-data = "${file("./nginx-meta.yml")}" 
-  }
-}  
-
-
-
-
-
-# resource "yandex_compute_instance" "Server"  {
-#     count = length(var.vm_names)
-#     name = var.vm_names[count.index]
+# resource "yandex_compute_instance" "http"  {
+#     count = length(var.vm_http)
+#     name = var.vm_http[count.index]
 #     platform_id = "standard-v3"
-#     zone = var.vm_names[count.index] == "prometheus11" ? "ru-central1-a" :  "ru-central1-b" 
-#     hostname = "${var.vm_names[count.index]}.dip."
+#     zone = var.vm_http[count.index] == "http22" ? "ru-central1-a" :  "ru-central1-b" 
+#     hostname = "${var.vm_http[count.index]}.dip."
+# 
+# 
+# 
 # #Прерываяемая ВМ
 # scheduling_policy {
 #     preemptible = true
 #   }
+# 
 #   resources {
 #     cores  = 2
-#     memory = var.vm_names[count.index] == "elastic11" || var.vm_names[count.index] ==  "kibana11" ?  8 : 2 
+#     memory = 2
 #     core_fraction = 20
 #   }
+# 
 #   boot_disk {
 #     initialize_params {
 #       #size = 4194304 
 #       image_id = "fd8qc4ui9j0elhh8im0n"
 #     }
 #   }
+# 
 #   network_interface {
 #     #subnet_id = "yandex_vpc_subnet.dip-ru-central1-a11.id" 
-#    subnet_id = var.vm_names[count.index] == "prometheus11"  ? yandex_vpc_subnet.dip-ru-central1-a11.id : yandex_vpc_subnet.dip-ru-central1-b11.id
+#    subnet_id = var.vm_http[count.index] == "http22"  ? yandex_vpc_subnet.dip-ru-central1-a11.id : yandex_vpc_subnet.dip-ru-central1-b11.id
 #   dns_record {
-#     fqdn = "${var.vm_names[count.index]}.dip."
+#     fqdn = "${var.vm_http[count.index]}.dip."
 #     ttl = 300
 #   }
 #     nat       = true
 #   }
+#   
+# 
+# 
 # metadata = {
-#     user-data = var.vm_names[count.index] == "grafana11" ? "${file("./grafana-meta.yml")}" : ""
+#     user-data = "${file("./nginx-meta.yml")}" 
 #   }
 # }  
+
+
+
+
+
+resource "yandex_compute_instance" "Server"  {
+    count = length(var.vm_names)
+    name = var.vm_names[count.index]
+    platform_id = "standard-v3"
+    zone = var.vm_names[count.index] == "prometheus11" || var.vm_names[count.index] == "http22" ? "ru-central1-a" :  "ru-central1-b" 
+    hostname = "${var.vm_names[count.index]}.dip."
+#Прерываяемая ВМ
+scheduling_policy {
+    preemptible = true
+  }
+  resources {
+    cores  = 2
+    memory = var.vm_names[count.index] == "elastic11" || var.vm_names[count.index] ==  "kibana11" ?  8 : 2 
+    core_fraction = 20
+  }
+  boot_disk {
+    initialize_params {
+      #size = 4194304 
+      image_id = "fd8qc4ui9j0elhh8im0n"
+    }
+  }
+  network_interface {
+    #subnet_id = "yandex_vpc_subnet.dip-ru-central1-a11.id" 
+   subnet_id = var.vm_names[count.index] == "prometheus11" || var.vm_names[count.index] == "http22"  ? yandex_vpc_subnet.dip-ru-central1-a11.id : yandex_vpc_subnet.dip-ru-central1-b11.id
+  dns_record {
+    fqdn = "${var.vm_names[count.index]}.dip."
+    ttl = 300
+  }
+    nat       = true
+   # security_group_ids = [yandex_vpc_security_group.sg[count.index].id]
+        
+      
+  }
+metadata = {
+  
+    
+    
+     
+          user-data =  "${file("./${var.vm_names[count.index]}-meta.yml")}"
+     
+     
+   
+   # user-data = var.vm_names[count.index] == "grafana11" ? "${file("./grafana-meta.yml")}" : ""
+  #  user-data = var.vm_names[count.index] == "prometheus11" ? "${file("./prometheus-meta.yml")}" : ""
+}
+}  
 
 
 
@@ -143,44 +128,34 @@ resource "yandex_vpc_subnet" "dip-ru-central1-a11" {
   v4_cidr_blocks = ["10.128.128.0/24"]
 }
 
-# 
-# resource "yandex_vpc_security_group" "sg" {
-#   name       = "sg"
-#   network_id = yandex_vpc_network.dip111.id
-# 
-# 
-# dynamic  "egress" {
-#     for_each = lookup(var.allow_port_list, var.env)
-#     content {
-#         protocol       = "ANY"
-#         port           = "ANY"
-#         v4_cidr_blocks = ["0.0.0.0/0"]
-#     
-#     
-#     
-#     }
-#     
-#   }
-# 
-#   ingress {
-#     protocol       = "TCP"
-#     port           = 80
-#     v4_cidr_blocks = ["0.0.0.0/0"]
-#   }
-# 
-#   ingress {
-#     protocol       = "TCP"
-#     port           = 443
-#     v4_cidr_blocks = ["0.0.0.0/0"]
-#   }
-# 
-#   ingress {
-#     protocol       = "TCP"
-#     port           = 30080
-#     v4_cidr_blocks = ["198.18.235.0/24", "198.18.248.0/24"]
-#   }
-# }
-# 
+
+resource "yandex_vpc_security_group" "sg" {
+    count = length(var.vm_names)
+    name = var.vm_names[count.index]
+    network_id = yandex_vpc_network.dip111.id
+
+
+  dynamic  "egress" {
+    for_each = lookup (var.port_sg_egress, var.vm_names[count.index])
+    content {
+        protocol       = "TCP"
+        port           = egress.value
+        v4_cidr_blocks = ["10.0.0.0/8"]
+       
+    }
+  } 
+ 
+  dynamic  "ingress" {
+    for_each = lookup (var.port_sg_ingress, var.vm_names[count.index])
+    content {
+        protocol       = "TCP"
+        port           = ingress.value
+        v4_cidr_blocks = ["0.0.0.0/0"]
+       
+    }
+  }  
+ 
+}
 
 
 
