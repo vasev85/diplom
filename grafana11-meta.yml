@@ -6,6 +6,13 @@ users:
    sudo: ['ALL=(ALL) NOPASSWD:ALL']
    ssh-authorized-keys:
      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHSzVnSooaSM04utwPJ5cI9I8UcbOM8elmXjFC9xMj+g
+ - name: ansible
+   groups: sudo
+   shell: /bin/bash
+   sudo: ['ALL=(ALL) NOPASSWD:ALL']
+   ssh-authorized-keys:
+     - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICaUMW1hkguCZYFQWCKqH8aQNWhlW3X/XbEMKJnvpPjk
+
 disable_root: true
 timezone: Europe/Moscow
 repo_update: true
@@ -34,8 +41,7 @@ runcmd:
  - [sh, -c, "sudo dnf -y install  /tmp/grafana-enterprise-9.3.6-1.x86_64.rpm"]
  - [sh, -c, "wget -P /tmp/ https://github.com/vasev85/diplom/raw/master/grafana/5.tar"]
  - [sh, -c, "wget -P /tmp/ https://github.com/vasev85/diplom/raw/master/grafana/1.tar"] 
- - [sh, -c, "chown -R grafana:grafana /etc/grafana"]
- - [sh, -c, "chown -R grafana:grafana /var/lib/grafana"]
+ 
  - [sh, -c, "tar xvf /tmp/1.tar"]
  - [sh, -c, "tar xvf /tmp/5.tar"]
  - [sh, -c, "cp -r  /grafana /var/lib/"]
@@ -46,7 +52,8 @@ runcmd:
 # -  [sh,-c, "sudo dnf install y /tmp/grafana-enterprise-9.3.6-1.x86_64.rpm"]
 # - [cp node_exporter-1.5.0.linux-amd64/node_exporter /usr/local/bin]
 # - [sudo useradd --no-create-home --shell /bin/false node_exporter]
-
+ - [sh, -c, "chown -R grafana:grafana /etc/grafana"]
+ - [sh, -c, "chown -R grafana:grafana /var/lib/grafana"]
  - [systemctl, enable, grafana-server.service]
  - [systemctl, start, --no-block, grafana-server.service]
  

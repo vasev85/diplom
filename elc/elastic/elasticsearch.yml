@@ -1,3 +1,94 @@
+ES_HOME=/usr/share/elasticsearch
+ES_PATH_CONF=/etc/elasticsearch
+
+для поднятия на elastic transport ssl
+./bin/elasticsearch-certutil ca
+./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
+
+
+для поднятия на elastic https тутже можно и для  kibana
+./bin/elasticsearch-certutil  http
+
+
+
+
+конвертация p12 в pem
+openssl pkcs12 -in http.p12 -out newfile.pem -nodes
+
+./bin/elasticsearch-certutil cert  -ca /etc/elasticsearch/elastic-stack-ca.p12 -name kibana-certificate -dns kibana11.dip. kibana11.dip *.dip *.dip. -ip 10.129.129.15
+
+Changed password for user apm_system
+PASSWORD apm_system = grjiPrugy5n8WzWvEj6P
+
+Changed password for user kibana_system
+PASSWORD kibana_system = suh5GW42wcA1tUm0QxBW
+
+Changed password for user kibana
+PASSWORD kibana = suh5GW42wcA1tUm0QxBW
+
+Changed password for user logstash_system
+PASSWORD logstash_system = dL7wUwg362gudCFnWq8R
+
+Changed password for user beats_system
+PASSWORD beats_system = pn7uwz8DS38ul2nqpIdz
+
+Changed password for user remote_monitoring_user
+PASSWORD remote_monitoring_user = nrD5WtQm2QfZtj3wrk6a
+
+Changed password for user elastic
+PASSWORD elastic = NryCIduKVwZPOUiny2My
+
+
+kibana connect to elastic
+
+elasticsearch.ssl.certificateAuthorities: [ "/etc/kibana/newfile.pem" ]
+newfile.pem create:
+конвертация p12 в pem
+openssl pkcs12 -in http.p12 -out newfile.pem -nodes
+ http.p12  создается при запуске   ./bin/elasticsearch-certutil http
+ 
+server.ssl.enabled: true
+server.ssl.key: /etc/kibana/kibana-server.key # генерация сертификата для http  можно взять из  ./bin/elasticsearch-certutil http
+server.ssl.certificate: /etc/kibana/kibana.crt # подписание kibana-server.csr или самоподпись openssl x509 -signkey domain.key -in domain.csr -req -days 365 -out domain.crt
+ 
+ 
+ 
+#cd $ES_PATH_CONF
+#​mkdir certs
+
+#openssl req -newkey rsa:4096 -nodes -keyout node1.key -x509 -days 3650 -out node1.crt
+# /0660  ./certs/ 
+#chmod -R 774 ./certs/ 
+
+#bin/elasticsearch-certutil ca
+
+
+# This turns on SSL for the HTTP (Rest) interface
+xpack.security.http.ssl.enabled: true
+# This configures the keystore to use for SSL on HTTP
+xpack.security.http.ssl.keystore.path: "http.p12"
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path:  elastic-stack-ca.p12
+
+#xpack.security.enabled: true
+#xpack.security.http.ssl.enabled: true
+#xpack.security.transport.ssl.enabled: true
+#xpack.security.http.ssl.key: certs/node1.key
+#xpack.security.http.ssl.certificate: certs/node1.crt
+#xpack.security.http.ssl.certificate_authorities: certs/ca.crt
+#xpack.security.transport.ssl.key: certs/node1.key
+#xpack.security.transport.ssl.certificate: certs/node1.crt
+#xpack.security.transport.ssl.certificate_authorities: certs/ca.crt
 
 cluster.name: netology-dip 
 cluster.initial_master_nodes: ["node-1"] 
@@ -17,9 +108,63 @@ path.logs: /var/log/elasticsearch
 network.host: 0.0.0.0 # слушаем только локальный интерфейс
 http.host: 0.0.0.0 # слушаем только локальный интерфейс
 http.port: 9200	
-#xpack.security.transport.ssl.enabled: true
-#xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p12
-xpack.security.enabled: false
-xpack.license.self_generated.type: basic
+
+#xpack.security.enabled: false
+#xpack.license.self_generated.type: basic
 #bootstrap.memory_lock: true
 #discovery.seed_hosts: ["127.0.0.1", "[::1]"]
+
+
+
+
+
+
+
+
+
+
+cluster.name: netology-dip 
+cluster.initial_master_nodes: ["node-1"] 
+node.name: node-1 
+node.roles: [ master, data] 
+
+#cluster.initial_master_nodes: ["node-1"] 
+#discovery.seed_hosts: ["10.129.0.10"] 
+
+
+
+path.data: /var/lib/elasticsearch # директория для хранения данных
+path.logs: /var/log/elasticsearch
+network.host: 0.0.0.0 # слушаем только локальный интерфейс
+http.host: 0.0.0.0 # слушаем только локальный интерфейс
+http.port: 9200	
+
+
+# This turns on SSL for the HTTP (Rest) interface
+xpack.security.http.ssl.enabled: true
+
+# This configures the keystore to use for SSL on HTTP
+xpack.security.http.ssl.keystore.path: "http.p12"
+
+
+#xpack.security.enabled: true
+#xpack.security.http.ssl.enabled: true
+#xpack.security.http.ssl.keystore.path: /etc/elasticsearch/certs/elastic-certificates.p12
+#xpack.security.http.ssl.keystore.password: liferay
+#xpack.security.http.ssl.truststore.path: /etc/elasticsearch/certs/elastic-certificates.p12
+#xpack.security.http.ssl.truststore.password: liferay
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
+
+
+#xpack.license.self_generated.type: basic
+#bootstrap.memory_lock: true
+#discovery.seed_hosts: ["127.0.0.1", "[::1]"]
+
+
+
+

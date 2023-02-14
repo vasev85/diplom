@@ -1,0 +1,50 @@
+#cloud-config
+users:
+ - name: dip
+   groups: sudo
+   shell: /bin/bash
+   sudo: ['ALL=(ALL) NOPASSWD:ALL']
+   ssh-authorized-keys:
+     - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICaUMW1hkguCZYFQWCKqH8aQNWhlW3X/XbEMKJnvpPjk
+ - name: ansible
+   groups: sudo
+   shell: /bin/bash
+   sudo: ['ALL=(ALL) NOPASSWD:ALL']
+   ssh-authorized-keys:
+     - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICaUMW1hkguCZYFQWCKqH8aQNWhlW3X/XbEMKJnvpPjk
+
+disable_root: true
+timezone: Europe/Moscow
+repo_update: true
+repo_upgrade: true
+dnf:
+  preserve_sources_list: true
+
+packages:
+
+  - wget
+
+  
+
+
+
+
+
+runcmd:
+# - [sh, -c, "wget -P /tmp/ https://github.com/vasev85/diplom/raw/master/grafana-enterprise-9.3.6-1.x86_64.rpm"]
+# - [sh, -c, "sudo dnf -y install  /tmp/grafana-enterprise-9.3.6-1.x86_64.rpm"]
+# - [sh, -c, "wget -P /tmp/ https://github.com/vasev85/diplom/raw/master/grafana/5.tar"]
+# - [sh, -c, "wget -P /tmp/ https://github.com/vasev85/diplom/raw/master/grafana/1.tar"] 
+# 
+# - [sh, -c, "tar xvf /tmp/1.tar"]
+# - [sh, -c, "tar xvf /tmp/5.tar"]
+# - [sh, -c, "cp -r  /grafana /var/lib/"]
+# - [sh, -c, "cp -r /provisioning /etc/grafana/"]
+# - [sh, -c, "chown -R grafana:grafana /var/lib/grafana"]
+# - [systemctl, enable, grafana-server.service]
+# - [systemctl, start, --no-block, grafana-server.service]
+# 
+# 
+## - [systemctl, restart, grafana-server.service]
+##  - [ systemctl, enable, nginx.service ]
+##  - [ systemctl, start, --no-block, nginx.service ]
