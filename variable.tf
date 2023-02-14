@@ -16,7 +16,7 @@ variable "vm_names" {
   description = "list of the names  VM "
   type        = list(string)
  # default     = ["http11","elastic11","kibana11"]
-  default     = ["sg11","http22","http11", "prometheus11", "grafana11", "sg11", "elastic11", "kibana11"]
+  default     = ["sg11","http22","http11", "prometheus11", "grafana11", "elastic11", "kibana11"]
 }
 
 variable "port_sg_egress" {

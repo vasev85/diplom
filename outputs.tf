@@ -1,9 +1,9 @@
 
 
-# output "alb_all" {
-# value = yandex_alb_load_balancer.example-balancer.*
-#}
-
+ # output "alb_all" {
+#  value = yandex_alb_load_balancer.*
+# }
+# 
 
 
 
