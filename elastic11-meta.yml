@@ -29,7 +29,7 @@ runcmd:
  - [sh, -c, "wget -P /tmp/ https://github.com/vasev85/diplom/raw/master/elc/elasticsearch-8.6.1-x86_64.rpm"]
  - [sh, -c, "dnf -y install  /tmp/elasticsearch-8.6.1-x86_64.rpm"]
  - [sh, -c, "rm /etc/elasticsearch/elasticsearch.yml"]
- - [sh, -c, "wget -P /etc/elasticsearch/ https://github.com/vasev85/diplom/raw/master/elc/elastic/elasticsearch.yml"]
+ - [sh, -c, "wget -P /etc/elasticsearch/  https://github.com/vasev85/diplom/raw/master/elc/elasticsearch.yml"]
  
  
 # - [sh, -c, "sudo wget -P /etc/systemd/system/ https://github.com/vasev85/diplom/raw/master/config/prometheus-nginxlog-exporter.service"]
